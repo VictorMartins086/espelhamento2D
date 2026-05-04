@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Espelhamento 2D - Reflexões no Plano Cartesiano</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header>
+    <h1>Sistema de Espelhamento 2D</h1>
+    <p class="subtitle">Reflexões geométricas em relação aos eixos x e y</p>
+  </header>
+
+  <main>
+    <section class="panel">
+      <h2>Entrada de Dados</h2>
+
+      <div class="field">
+        <label for="figura">Figura pré-definida:</label>
+        <select id="figura">
+          <option value="custom">Personalizada</option>
+          <option value="triangulo" selected>Triângulo</option>
+          <option value="quadrado">Quadrado</option>
+          <option value="pentagono">Pentágono</option>
+          <option value="ponto">Ponto único</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="pontos">Pontos (x,y; x,y; ...):</label>
+        <textarea id="pontos" rows="3" placeholder="Ex: 1,1; 4,1; 2,3"></textarea>
+        <small>Separe coordenadas por vírgula e pontos por ponto-e-vírgula.</small>
+      </div>
+
+      <div class="field">
+        <label>Tipo de reflexão:</label>
+        <div class="radios">
+          <label><input type="radio" name="reflexao" value="nenhuma" checked /> Nenhuma</label>
+          <label><input type="radio" name="reflexao" value="x" /> Eixo X (x, y) → (x, -y)</label>
+          <label><input type="radio" name="reflexao" value="y" /> Eixo Y (x, y) → (-x, y)</label>
+          <label><input type="radio" name="reflexao" value="xy" /> Ambos (x, y) → (-x, -y)</label>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button id="aplicar">Aplicar</button>
+        <button id="limpar" class="secondary">Limpar</button>
+      </div>
+
+      <div id="saida" class="output"></div>
+    </section>
+
+    <section class="panel canvas-panel">
+      <h2>Visualização</h2>
+      <canvas id="plano" width="600" height="600"></canvas>
+      <div class="legenda">
+        <span class="dot original"></span> Original
+        <span class="dot refletido"></span> Refletido
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>Projeto Gloss-Rio · Espelhamento 2D</p>
+  </footer>
+
+  <script type="module" src="src/main.js"></script>
+</body>
+</html>
