@@ -5,6 +5,15 @@ import os
 app = Flask(__name__, static_folder='.', static_url_path='')
 
 
+@app.after_request
+def add_no_cache_headers(response):
+    # Evita que o navegador use arquivos antigos (HTML/JS/CSS) durante o desenvolvimento.
+    response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
+    response.headers['Pragma'] = 'no-cache'
+    response.headers['Expires'] = '0'
+    return response
+
+
 def refletir_eixo_x(p):
     return {'x': p['x'], 'y': -p['y']}
 

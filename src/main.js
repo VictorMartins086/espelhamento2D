@@ -27,10 +27,28 @@ function getReflexaoSelecionada() {
 }
 
 function carregarFigura(nome) {
-  // Popula as caixas de ponto de acordo com a figura selecionada
+  // Figuras pré-definidas têm quantidade fixa de pontos.
+  // Em "Personalizada", o usuário controla a quantidade.
+  const isCustom = nome === 'custom';
   const fig = FIGURAS[nome];
-  if (fig) renderPontos(fig);
-  else renderPontos([]);
+
+  if (isCustom) {
+    setPontosEditavel(true);
+    // não sobrescreve os pontos do usuário ao alternar para custom
+    if (elPontosBoxes.children.length === 0) renderPontos([]);
+  } else {
+    setPontosEditavel(false);
+    renderPontos(fig || []);
+  }
+
+  // Ao trocar figura, volta para "nenhuma" reflexão para evitar confusão
+  if (elEixoX) elEixoX.checked = false;
+  if (elEixoY) elEixoY.checked = false;
+}
+
+function setPontosEditavel(ativo) {
+  if (btnAddPonto) btnAddPonto.disabled = !ativo;
+  if (btnRemPonto) btnRemPonto.disabled = !ativo;
 }
 
 function renderPontos(pontos) {
