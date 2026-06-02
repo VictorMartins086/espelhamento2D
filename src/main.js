@@ -2,7 +2,6 @@
 // Integra entrada, processamento e visualização, gerenciando o fluxo do programa.
 
 import { parsePontos, formatarPontos, FIGURAS } from "./entrada.js";
-import { aplicarReflexao } from "./processamento.js";
 import { desenhar } from "./visualizacao.js";
 
 const $ = (id) => document.getElementById(id);
@@ -44,7 +43,28 @@ function executar() {
     }
 
     const tipo = getReflexaoSelecionada();
-    const refletidos = tipo === "nenhuma" ? [] : aplicarReflexao(originais, tipo);
+    // Envia os pontos ao backend Python para processamento
+    let refletidos = [];
+    try {
+      const resp = await fetch('/api/reflect', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ points: originais, tipo })
+      });
+      if (!resp.ok) {
+        const err = await resp.json().catch(() => ({ error: resp.statusText }));
+        throw new Error(err.error || resp.statusText || 'Erro no servidor');
+      }
+      const data = await resp.json();
+      refletidos = data.refletidos || [];
+      elSaida.textContent = data.texto || '';
+      desenhar(elCanvas, originais, refletidos);
+      return;
+    } catch (e) {
+      elSaida.textContent = 'Erro: ' + e.message;
+      desenhar(elCanvas, originais, []);
+      return;
+    }
 
     let texto = `Reflexão aplicada: ${nomeReflexao(tipo)}\n\n`;
     texto += "Originais:\n";
