@@ -33,7 +33,7 @@ function nomeReflexao(tipo) {
   }
 }
 
-function executar() {
+async function executar() {
   try {
     const originais = parsePontos(elPontos.value);
     if (originais.length === 0) {
@@ -65,21 +65,6 @@ function executar() {
       desenhar(elCanvas, originais, []);
       return;
     }
-
-    let texto = `Reflexão aplicada: ${nomeReflexao(tipo)}\n\n`;
-    texto += "Originais:\n";
-    originais.forEach((p, i) => {
-      texto += `  P${i + 1} = (${p.x}, ${p.y})\n`;
-    });
-    if (refletidos.length) {
-      texto += "\nRefletidos:\n";
-      refletidos.forEach((p, i) => {
-        texto += `  P${i + 1}' = (${p.x}, ${p.y})\n`;
-      });
-    }
-    elSaida.textContent = texto;
-
-    desenhar(elCanvas, originais, refletidos);
   } catch (err) {
     elSaida.textContent = "Erro: " + err.message;
   }
