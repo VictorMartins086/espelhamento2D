@@ -16,6 +16,8 @@ const btnAddPonto = $("add-ponto");
 const btnRemPonto = $("rem-ponto");
 const elEixoX = $("eixo-x");
 const elEixoY = $("eixo-y");
+const elEixoXValor = $("eixo-x-valor");
+const elEixoYValor = $("eixo-y-valor");
 
 function getReflexaoSelecionada() {
   const x = !!elEixoX?.checked;
@@ -24,6 +26,12 @@ function getReflexaoSelecionada() {
   if (x) return "x";
   if (y) return "y";
   return "nenhuma";
+}
+
+function getEixosValores() {
+  const axisX = parseNumero(elEixoXValor?.value) ?? 0;
+  const axisY = parseNumero(elEixoYValor?.value) ?? 0;
+  return { axisX, axisY };
 }
 
 function carregarFigura(nome) {
@@ -44,6 +52,8 @@ function carregarFigura(nome) {
   // Ao trocar figura, volta para "nenhuma" reflexão para evitar confusão
   if (elEixoX) elEixoX.checked = false;
   if (elEixoY) elEixoY.checked = false;
+  if (elEixoXValor) elEixoXValor.value = '0';
+  if (elEixoYValor) elEixoYValor.value = '0';
 }
 
 function setPontosEditavel(ativo) {
@@ -133,13 +143,23 @@ async function executar() {
     }
 
     const tipo = getReflexaoSelecionada();
+    const { axisX, axisY } = getEixosValores();
     // Envia os pontos ao backend Python para processamento
     let refletidos = [];
     try {
       const resp = await fetch('/api/reflect', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ points: originais, tipo })
+        body: JSON.stringify({
+          points: originais,
+          tipo,
+          // offsets dos eixos (linhas de reflexão)
+          axisX,
+          axisY,
+          // flags explícitas (para o backend suportar ambos)
+          reflectX: !!elEixoX?.checked,
+          reflectY: !!elEixoY?.checked,
+        })
       });
       if (!resp.ok) {
         const err = await resp.json().catch(() => ({ error: resp.statusText }));
@@ -147,11 +167,23 @@ async function executar() {
       }
       const data = await resp.json();
       refletidos = data.refletidos || [];
-      elSaida.textContent = data.texto || '';
+
+      let texto = '';
+      if (Array.isArray(data.matriz) && data.matriz.length === 3) {
+        texto += 'Resumo matricial (3x3):\n';
+        texto += data.matriz
+          .map((row) => row.map((v) => Number(v).toFixed(2)).join('\t'))
+          .join('\n');
+        texto += '\n\n';
+      }
+      texto += data.texto || '';
+      elSaida.textContent = texto;
       desenhar(elCanvas, originais, refletidos);
       return;
     } catch (e) {
-      elSaida.textContent = 'Erro: ' + e.message;
+      elSaida.textContent =
+        'Erro: ' + e.message +
+        '\n\nDica: confirme que o servidor Python está rodando e que você abriu pelo link http://127.0.0.1:5000 (não file://).';
       desenhar(elCanvas, originais, []);
       return;
     }
@@ -165,6 +197,8 @@ function limpar() {
   elFigura.value = "custom";
   if (elEixoX) elEixoX.checked = false;
   if (elEixoY) elEixoY.checked = false;
+  if (elEixoXValor) elEixoXValor.value = '0';
+  if (elEixoYValor) elEixoYValor.value = '0';
   elSaida.textContent = "";
   desenhar(elCanvas, [], []);
 }
@@ -182,6 +216,8 @@ elLimpar.addEventListener("click", limpar);
 
 elEixoX?.addEventListener('change', executar);
 elEixoY?.addEventListener('change', executar);
+elEixoXValor?.addEventListener('input', executar);
+elEixoYValor?.addEventListener('input', executar);
 
 // Inicialização
 carregarFigura(elFigura.value);

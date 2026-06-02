@@ -106,8 +106,26 @@ textarea { resize: vertical; }
 }
 
 .radios label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
   font-weight: 400;
   cursor: pointer;
+}
+
+.radios input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: #38bdf8;
+}
+
+.axis-input {
+  width: 72px;
+  background: #0f172a;
+  color: #e2e8f0;
+  border: 1px solid #475569;
+  border-radius: 4px;
+  padding: 0.35rem 0.45rem;
 }
 
 .actions {

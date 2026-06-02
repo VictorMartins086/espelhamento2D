@@ -40,8 +40,16 @@
       <div class="field">
         <label>Eixos para refletir:</label>
         <div class="radios">
-          <label><input type="checkbox" id="eixo-x" /> Eixo X</label>
-          <label><input type="checkbox" id="eixo-y" /> Eixo Y</label>
+          <label>
+            <input type="checkbox" id="eixo-x" />
+            Eixo X em y =
+            <input id="eixo-x-valor" type="text" inputmode="decimal" value="0" class="axis-input" />
+          </label>
+          <label>
+            <input type="checkbox" id="eixo-y" />
+            Eixo Y em x =
+            <input id="eixo-y-valor" type="text" inputmode="decimal" value="0" class="axis-input" />
+          </label>
         </div>
         <small>Marque um ou ambos para refletir. Se nenhum estiver marcado, não há reflexão.</small>
       </div>
