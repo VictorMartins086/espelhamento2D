@@ -59,6 +59,24 @@ main {
   gap: 0.35rem;
 }
 
+.pontos-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+}
+
+.point-row {
+  display: contents;
+}
+
+.point-input {
+  background: #0f172a;
+  color: #e2e8f0;
+  border: 1px solid #475569;
+  border-radius: 4px;
+  padding: 0.45rem;
+}
+
 .field label {
   font-weight: 600;
   font-size: 0.9rem;

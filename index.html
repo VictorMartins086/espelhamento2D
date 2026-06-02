@@ -28,9 +28,13 @@
       </div>
 
       <div class="field">
-        <label for="pontos">Pontos (x,y; x,y; ...):</label>
-        <textarea id="pontos" rows="3" placeholder="Ex: 1,1; 4,1; 2,3"></textarea>
-        <small>Separe coordenadas por vírgula e pontos por ponto-e-vírgula.</small>
+        <label for="pontos-boxes">Pontos (insira cada coordenada):</label>
+        <div id="pontos-boxes" class="pontos-grid"></div>
+        <div style="margin-top:0.5rem; display:flex; gap:0.5rem;">
+          <button id="add-ponto" type="button">Adicionar ponto</button>
+          <button id="rem-ponto" type="button" class="secondary">Remover ponto</button>
+        </div>
+        <small>Use campos separados para X e Y. Para figuras pré-definidas os pontos aparecem automaticamente.</small>
       </div>
 
       <div class="field">

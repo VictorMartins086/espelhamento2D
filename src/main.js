@@ -7,11 +7,13 @@ import { desenhar } from "./visualizacao.js";
 const $ = (id) => document.getElementById(id);
 
 const elFigura = $("figura");
-const elPontos = $("pontos");
+const elPontosBoxes = $("pontos-boxes");
 const elAplicar = $("aplicar");
 const elLimpar = $("limpar");
 const elSaida = $("saida");
 const elCanvas = $("plano");
+const btnAddPonto = $("add-ponto");
+const btnRemPonto = $("rem-ponto");
 
 function getReflexaoSelecionada() {
   const sel = document.querySelector('input[name="reflexao"]:checked');
@@ -19,9 +21,65 @@ function getReflexaoSelecionada() {
 }
 
 function carregarFigura(nome) {
-  if (nome === "custom") return;
+  // Popula as caixas de ponto de acordo com a figura selecionada
   const fig = FIGURAS[nome];
-  if (fig) elPontos.value = formatarPontos(fig);
+  if (fig) renderPontos(fig);
+  else renderPontos([]);
+}
+
+function renderPontos(pontos) {
+  elPontosBoxes.innerHTML = '';
+  pontos.forEach((p) => addPontoBox(p.x, p.y));
+  if (pontos.length === 0) addPontoBox('', '');
+}
+
+function addPontoBox(x = '', y = '') {
+  const idx = elPontosBoxes.children.length;
+  const row = document.createElement('div');
+  row.className = 'point-row';
+  row.dataset.index = idx;
+
+  const inX = document.createElement('input');
+  inX.type = 'number';
+  inX.step = 'any';
+  inX.placeholder = 'x';
+  inX.value = x;
+  inX.className = 'point-input';
+
+  const inY = document.createElement('input');
+  inY.type = 'number';
+  inY.step = 'any';
+  inY.placeholder = 'y';
+  inY.value = y;
+  inY.className = 'point-input';
+
+  row.appendChild(inX);
+  row.appendChild(inY);
+  elPontosBoxes.appendChild(row);
+}
+
+function removeLastPontoBox() {
+  if (elPontosBoxes.children.length > 1) {
+    elPontosBoxes.removeChild(elPontosBoxes.lastElementChild);
+  } else {
+    // clear the only one
+    const inputs = elPontosBoxes.querySelectorAll('input');
+    inputs.forEach(i => i.value = '');
+  }
+}
+
+function getPontosFromBoxes() {
+  const rows = Array.from(elPontosBoxes.querySelectorAll('.point-row'));
+  const pontos = [];
+  for (const row of rows) {
+    const inputs = row.querySelectorAll('input');
+    if (inputs.length < 2) continue;
+    const x = Number(inputs[0].value);
+    const y = Number(inputs[1].value);
+    if (Number.isNaN(x) || Number.isNaN(y)) continue;
+    pontos.push({ x, y });
+  }
+  return pontos;
 }
 
 function nomeReflexao(tipo) {
@@ -35,7 +93,7 @@ function nomeReflexao(tipo) {
 
 async function executar() {
   try {
-    const originais = parsePontos(elPontos.value);
+    const originais = getPontosFromBoxes();
     if (originais.length === 0) {
       elSaida.textContent = "Insira ao menos um ponto.";
       desenhar(elCanvas, [], []);
@@ -71,7 +129,7 @@ async function executar() {
 }
 
 function limpar() {
-  elPontos.value = "";
+  renderPontos([]);
   elFigura.value = "custom";
   document.querySelector('input[name="reflexao"][value="nenhuma"]').checked = true;
   elSaida.textContent = "";
@@ -82,6 +140,9 @@ elFigura.addEventListener("change", (e) => {
   carregarFigura(e.target.value);
   executar();
 });
+
+btnAddPonto.addEventListener('click', () => { addPontoBox(); });
+btnRemPonto.addEventListener('click', () => { removeLastPontoBox(); });
 
 elAplicar.addEventListener("click", executar);
 elLimpar.addEventListener("click", limpar);
