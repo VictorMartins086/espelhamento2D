@@ -38,13 +38,12 @@
       </div>
 
       <div class="field">
-        <label>Tipo de reflexão:</label>
+        <label>Eixos para refletir:</label>
         <div class="radios">
-          <label><input type="radio" name="reflexao" value="nenhuma" checked /> Nenhuma</label>
-          <label><input type="radio" name="reflexao" value="x" /> Eixo X (x, y) → (x, -y)</label>
-          <label><input type="radio" name="reflexao" value="y" /> Eixo Y (x, y) → (-x, y)</label>
-          <label><input type="radio" name="reflexao" value="xy" /> Ambos (x, y) → (-x, -y)</label>
+          <label><input type="checkbox" id="eixo-x" /> Eixo X</label>
+          <label><input type="checkbox" id="eixo-y" /> Eixo Y</label>
         </div>
+        <small>Marque um ou ambos para refletir. Se nenhum estiver marcado, não há reflexão.</small>
       </div>
 
       <div class="actions">
